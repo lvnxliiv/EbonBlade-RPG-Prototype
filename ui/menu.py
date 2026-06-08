@@ -1,5 +1,4 @@
-# menu.py — главное меню
-
+# menu.py — главное меню (кнопки-заглушки с русским текстом)
 import pygame
 import sys
 
@@ -11,34 +10,34 @@ class MainMenu:
         self.width = screen.get_width()
         self.height = screen.get_height()
 
-        # Загрузка фона
+        # Загрузка фона (оставлено без изменений)
         bg = pygame.image.load(BACKGROUND_IMAGE).convert()
         self.background = pygame.transform.scale(bg, (self.width, self.height))
 
+        # Параметры кнопок
         btn_w = 340
         btn_h = 75
         center_x = self.width // 2 - btn_w // 2
         spacing = 20
 
+        # Шрифт для текста кнопок
+        self.font = pygame.font.Font(None, 40)
+
+        # Кнопки: только прямоугольники и русский текст (вместо картинок)
         self.buttons = {
             "new_game": {
                 "rect": pygame.Rect(center_x, self.height // 2 - 80, btn_w, btn_h),
-                "image": self._load_btn("assets/ui/menu/button_newgame.png", btn_w, btn_h)
+                "text": "Новая игра"
             },
             "load_game": {
                 "rect": pygame.Rect(center_x, self.height // 2 - 80 + btn_h + spacing, btn_w, btn_h),
-                "image": self._load_btn("assets/ui/menu/button_loadgame.png", btn_w, btn_h)
+                "text": "Загрузить"
             },
             "exit": {
                 "rect": pygame.Rect(center_x, self.height // 2 - 80 + (btn_h + spacing) * 2, btn_w, btn_h),
-                "image": self._load_btn("assets/ui/menu/button_exit.png", btn_w, btn_h)
+                "text": "Выход"
             },
         }
-
-    def _load_btn(self, path, w, h):
-        """Загружает изображение кнопки и масштабирует"""
-        img = pygame.image.load(path).convert_alpha()
-        return pygame.transform.scale(img, (w, h))
 
     def handle_event(self, event):
         """Обрабатывает клик по кнопкам. Возвращает строку-действие или None."""
@@ -50,6 +49,16 @@ class MainMenu:
         return None
 
     def draw(self):
+        # Фон (картинка)
         self.screen.blit(self.background, (0, 0))
+
+        # Кнопки
         for btn in self.buttons.values():
-            self.screen.blit(btn["image"], btn["rect"])
+            # Серый прямоугольник кнопки
+            pygame.draw.rect(self.screen, (60, 60, 60), btn["rect"])
+            # Белая рамка
+            pygame.draw.rect(self.screen, (255, 255, 255), btn["rect"], 2)
+            # Красный текст по центру
+            text_surf = self.font.render(btn["text"], True, (255, 0, 0))
+            text_rect = text_surf.get_rect(center=btn["rect"].center)
+            self.screen.blit(text_surf, text_rect)
